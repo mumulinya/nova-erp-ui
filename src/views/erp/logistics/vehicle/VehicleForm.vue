@@ -10,6 +10,15 @@
       <el-form-item label="载重(吨)" prop="maxWeight">
         <el-input-number v-model="formData.maxWeight" placeholder="请输入载重" :min="0" :precision="2" />
       </el-form-item>
+      <el-form-item label="容积(m³)" prop="maxVolume">
+        <el-input-number v-model="formData.maxVolume" placeholder="请输入容积" :min="0" :precision="2" />
+      </el-form-item>
+      <el-form-item label="每日运费(元)" prop="pricePerDay">
+        <el-input-number v-model="formData.pricePerDay" placeholder="请输入每日运费" :min="0" :precision="2" />
+      </el-form-item>
+      <el-form-item label="每公里油费(元)" prop="fuelCostPerKm">
+        <el-input-number v-model="formData.fuelCostPerKm" placeholder="请输入每公里油费" :min="0" :precision="2" />
+      </el-form-item>
       <el-form-item label="状态" prop="status">
         <el-select v-model="formData.status" placeholder="请选择状态">
           <el-option label="空闲" :value="0" />
@@ -45,6 +54,9 @@ const formData = ref({
   plateNo: undefined,
   vehicleType: undefined,
   maxWeight: undefined,
+  maxVolume: undefined,
+  pricePerDay: undefined,
+  fuelCostPerKm: undefined,
   status: 0,
   remark: undefined
 })
@@ -98,6 +110,9 @@ const resetForm = () => {
     plateNo: undefined,
     vehicleType: undefined,
     maxWeight: undefined,
+    maxVolume: undefined,
+    pricePerDay: undefined,
+    fuelCostPerKm: undefined,
     status: 0,
     remark: undefined
   }

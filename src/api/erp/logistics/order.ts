@@ -14,6 +14,7 @@ export interface OrderVO {
   timeRequirement: string
   status: number
   outTime: Date
+  totalCost: number
   canDispatch: boolean
   remark: string
   createTime: Date

@@ -52,6 +52,12 @@
       <el-table-column label="收货地址" align="center" prop="receiverAddress" min-width="140" />
       <el-table-column label="货物信息" align="center" prop="goodsInfo" min-width="120" />
       <el-table-column label="出库时间" align="center" prop="outTime" :formatter="dateFormatter" width="180px" />
+      <el-table-column label="运输费用(元)" align="center" min-width="120">
+        <template #default="scope">
+          <span v-if="scope.row.totalCost">{{ scope.row.totalCost.toFixed(2) }}</span>
+          <span v-else class="text-gray-400">待计算</span>
+        </template>
+      </el-table-column>
       <el-table-column label="运输状态" align="center" prop="status" width="90">
         <template #default="scope">
           <el-tag v-if="scope.row.status === 0" type="warning">待发货</el-tag>

@@ -10,6 +10,10 @@ export interface StockVO {
   warehouseId: number
   // 库存数量
   count: number
+  // 最大库存
+  maxStock: number
+  // 安全库存
+  safeStock: number
 }
 
 // ERP 产品库存 API

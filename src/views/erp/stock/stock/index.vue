@@ -77,6 +77,18 @@
         prop="count"
         :formatter="erpCountTableColumnFormatter"
       />
+      <el-table-column
+        label="最大库存"
+        align="center"
+        prop="maxStock"
+        :formatter="erpCountTableColumnFormatter"
+      />
+      <el-table-column
+        label="安全库存"
+        align="center"
+        prop="safeStock"
+        :formatter="erpCountTableColumnFormatter"
+      />
       <el-table-column label="仓库" align="center" prop="warehouseName" />
     </el-table>
     <!-- 分页 -->

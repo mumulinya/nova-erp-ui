@@ -98,6 +98,19 @@
         <el-table-column label="仓库名称" prop="warehouseName" min-width="150" />
         <el-table-column label="当前库存" prop="currentStock" align="center" min-width="100" />
         <el-table-column label="安全库存" prop="safetyStock" align="center" min-width="100" />
+        <el-table-column label="最大库存" prop="maxStock" align="center" min-width="100" />
+        <el-table-column label="库存占用" align="center" min-width="120">
+          <template #default="scope">
+            <el-progress
+              v-if="scope.row.maxStock > 0"
+              :percentage="Math.min(Math.round((scope.row.currentStock / scope.row.maxStock) * 100), 100)"
+              :color="getUsageColor(scope.row.currentStock / scope.row.maxStock)"
+              :stroke-width="14"
+              :text-inside="true"
+            />
+            <span v-else class="text-gray-400">N/A</span>
+          </template>
+        </el-table-column>
         <el-table-column label="日均销量" prop="avgDailySale" align="center" min-width="100" />
         
         <el-table-column label="建议类型" prop="suggestType" align="center" width="100">
@@ -189,6 +202,14 @@ const emergencyCount = computed(() => list.value.filter(i => i.suggestType === 1
 const restockCount = computed(() => list.value.filter(i => i.suggestType === 1).length)
 const clearanceCount = computed(() => list.value.filter(i => i.suggestType === 2).length)
 const pendingCount = computed(() => list.value.filter(i => i.status === 0).length)
+
+/** 库存占用率颜色：>90%红色，>70%橙色，>50%黄色，其他绿色 */
+const getUsageColor = (ratio: number) => {
+  if (ratio >= 0.9) return '#F56C6C'
+  if (ratio >= 0.7) return '#E6A23C'
+  if (ratio >= 0.5) return '#F7BA2A'
+  return '#67C23A'
+}
 
 /** 前端过滤后的列表 */
 const filteredList = computed(() => {

@@ -34,6 +34,8 @@
       <el-table-column label="车牌号" align="center" prop="plateNo" />
       <el-table-column label="车辆类型" align="center" prop="vehicleType" />
       <el-table-column label="载重(吨)" align="center" prop="maxWeight" />
+      <el-table-column label="每日运费(元)" align="center" prop="pricePerDay" />
+      <el-table-column label="每公里油费(元)" align="center" prop="fuelCostPerKm" />
       <el-table-column label="状态" align="center" prop="status">
         <template #default="scope">
           <el-tag v-if="scope.row.status === 0" type="success">空闲</el-tag>

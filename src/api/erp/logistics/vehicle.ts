@@ -5,6 +5,9 @@ export interface VehicleVO {
   plateNo: string
   vehicleType: string
   maxWeight: number
+  maxVolume: number
+  pricePerDay: number
+  fuelCostPerKm: number
   status: number
   remark: string
   createTime: Date
