@@ -4,20 +4,18 @@
     ref="formSmsResetPassword"
     :model="resetPasswordData"
     :rules="rules"
-    class="login-form"
+    class="login-form forget-form"
     label-position="top"
     label-width="120px"
     size="large"
   >
     <el-row class="mx-[-10px]">
-      <!-- 租户名 -->
       <el-col :span="24" class="px-10px">
-        <el-form-item>
-          <LoginFormTitle class="w-full" />
-        </el-form-item>
+        <h2 class="forget-title">{{ t('login.resetPassword') || '重置密码' }}</h2>
       </el-col>
-      <el-col :span="24" class="px-10px">
-        <el-form-item v-if="resetPasswordData.tenantEnable === 'true'" prop="tenantName">
+      <!-- 租户名 -->
+      <el-col v-if="resetPasswordData.tenantEnable === 'true'" :span="24" class="px-10px">
+        <el-form-item prop="tenantName">
           <el-input
             v-model="resetPasswordData.tenantName"
             :placeholder="t('login.tenantNamePlaceholder')"
@@ -69,7 +67,6 @@
                   </span>
                 </template>
               </el-input>
-              <!-- </el-button> -->
             </el-col>
           </el-row>
         </el-form-item>
@@ -94,7 +91,7 @@
           />
         </el-form-item>
       </el-col>
-      <!-- 登录按钮 / 返回按钮 -->
+      <!-- 重置按钮 -->
       <el-col :span="24" class="px-10px">
         <el-form-item>
           <XButton
@@ -106,12 +103,13 @@
           />
         </el-form-item>
       </el-col>
+      <!-- 返回登录 -->
       <el-col :span="24" class="px-10px">
         <el-form-item>
           <XButton
             :loading="loginLoading"
             :title="t('login.backLogin')"
-            class="w-full"
+            class="w-full back-btn"
             @click="handleBackLogin()"
           />
         </el-form-item>
@@ -119,20 +117,21 @@
     </el-row>
   </el-form>
 </template>
+
 <script lang="ts" setup>
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
 
 import { useIcon } from '@/hooks/web/useIcon'
 
 import { sendSmsCode, smsResetPassword } from '@/api/login'
-import LoginFormTitle from './LoginFormTitle.vue'
 import { LoginStateEnum, useFormValid, useLoginState } from './useLogin'
 import { ElLoading } from 'element-plus'
 import * as authUtil from '@/utils/auth'
 import * as LoginApi from '@/api/login'
-defineOptions({ name: 'ForgetPasswordForm' })
-const verify = ref()
 
+defineOptions({ name: 'ForgetPasswordForm' })
+
+const verify = ref()
 const { t } = useI18n()
 const message = useMessage()
 const { currentRoute } = useRouter()
@@ -144,9 +143,9 @@ const iconCircleCheck = useIcon({ icon: 'ep:circle-check' })
 const { validForm } = useFormValid(formSmsResetPassword)
 const { handleBackLogin, getLoginState, setLoginState } = useLoginState()
 const getShow = computed(() => unref(getLoginState) === LoginStateEnum.RESET_PASSWORD)
-const captchaType = ref('blockPuzzle') // blockPuzzle 滑块 clickWord 点击文字 pictureWord 文字验证码
+const captchaType = ref('blockPuzzle')
 
-const validatePass2 = (_rule, value, callback) => {
+const validatePass2 = (_rule: any, value: string, callback: any) => {
   if (value === '') {
     callback(new Error('请再次输入密码'))
   } else if (value !== resetPasswordData.password) {
@@ -195,17 +194,14 @@ const redirect = ref<string>('')
 
 // 获取验证码
 const getCode = async () => {
-  // 情况一，未开启：则直接发送验证码
   if (resetPasswordData.captchaEnable === 'false') {
     await getSmsCode({})
   } else {
-    // 情况二，已开启：则展示验证码；只有完成验证码的情况，才进行发送验证码
-    // 弹出验证码
     verify.value.show()
   }
 }
 
-const getSmsCode = async (params) => {
+const getSmsCode = async (params: any) => {
   if (resetPasswordData.tenantEnable === 'true') {
     await getTenantId()
   }
@@ -213,9 +209,8 @@ const getSmsCode = async (params) => {
   smsVO.mobile = resetPasswordData.mobile
   await sendSmsCode(smsVO).then(async () => {
     message.success(t('login.SmsSendMsg'))
-    // 设置倒计时
     mobileCodeTimer.value = 60
-    let msgTimer = setInterval(() => {
+    const msgTimer = setInterval(() => {
       mobileCodeTimer.value = mobileCodeTimer.value - 1
       if (mobileCodeTimer.value <= 0) {
         clearInterval(msgTimer)
@@ -228,9 +223,7 @@ watch(
   (route: RouteLocationNormalizedLoaded) => {
     redirect.value = route?.query?.redirect as string
   },
-  {
-    immediate: true
-  }
+  { immediate: true }
 )
 
 const getTenantId = async () => {
@@ -267,13 +260,55 @@ const resetPassword = async () => {
 </script>
 
 <style lang="scss" scoped>
-:deep(.anticon) {
+.forget-form {
+  background: transparent;
+}
+
+.forget-title {
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 20px;
+  letter-spacing: 2px;
+  background: linear-gradient(135deg, #e0f2fe, #7dd3fc, #38bdf8);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientShift 4s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.getMobileCode {
+  color: #7dd3fc;
+  font-size: 13px;
+
   &:hover {
-    color: var(--el-color-primary) !important;
+    color: #bae6fd;
   }
 }
 
-.smsbtn {
-  margin-top: 33px;
+.back-btn :deep(.el-button) {
+  background: rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: rgba(255, 255, 255, 0.6) !important;
+  border-radius: 12px !important;
+  height: 46px;
+  font-size: 14px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    border-color: rgba(56, 189, 248, 0.25) !important;
+    color: #bae6fd !important;
+    box-shadow: 0 0 20px rgba(56, 189, 248, 0.08);
+    transform: translateY(-1px);
+  }
 }
 </style>
